@@ -3,7 +3,7 @@ const timeRemainingElement = document.querySelector('[data-testid="test-todo-tim
 const titleElement = document.querySelector('[data-testid="test-todo-title"]');
 const descriptionElement = document.querySelector('[data-testid="test-todo-description"]');
 const statusBadge = document.querySelector('[data-testid="test-todo-status"]');
-const toggle = document.querySelector('[data-testid="test-todo-complete-checkbox"]');
+const toggle = document.querySelector('[data-testid="test-todo-complete-toggle"]');
 
 function updateTimeRemaining() {
     const now = Date.now();
@@ -20,6 +20,8 @@ function updateTimeRemaining() {
         timeRemainingElement.textContent = `Due in ${hours}h ${minutes}m`;
     } else if (timeDiff <= 7 * 24 * 60 * 60 * 1000) {
         timeRemainingElement.textContent = `Due in ${days}d ${hours}h ${minutes}m`;
+    } else if (timeDiff < 0) {
+        timeRemainingElement.textContent = "Overdue!";
     }
     else {
         timeRemainingElement.textContent = `Due in ${days} days`;
