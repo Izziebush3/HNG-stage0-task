@@ -6,6 +6,29 @@
     box-sizing: border-box;
 }
 
+:root {
+    --priority-color-high-border: #c70000;
+    --priority-color-high-bg: #e18585;
+    --priority-color-high-dot: #ea1919;
+    --priority-color-medium-border: #e97714;
+    --priority-color-medium-bg: #ecc688;
+    --priority-color-medium-dot: #e1820b;
+    --priority-color-low-border: #4da6ff;
+    --priority-color-low-bg: #b8d9ff;
+    --priority-color-low-dot: #1b82ea;
+
+    --status-pending-bg: #eef0ff;
+    --status-in-progress-bg: #eaf51a;
+    --status-done-bg: #07f413;
+
+    --overdue-bg: #f52121;
+    --overdue-border: #460209;
+
+    --color-text: #000c07;
+    --color-muted: #636363;
+    --color-border: rgba(0, 0, 0, 0.12);
+}
+
 body {
     font-family: 'Segoe UI', Roboto, sans-serif;
     background: #636363;
@@ -14,17 +37,41 @@ body {
     justify-content: center;
     align-items: flex-start;
     padding: 2rem 1rem;
-    color: #000c07;
+    color: var(--color-text);
 }
 
 article {
     background: #dbdbdb;
-    border: 1.2px solid rgba(0, 0, 0, 0.12);
+    border: 1.2px solid var(--color-border);
     border-radius: 12px;
     padding: 1.25rem 1.5rem;
     width: 100%;
-    max-width: 480px;
+    overflow: hidden;
+    position: relative;
+    max-width: 500px;
     transition: border-color 0.2s;
+}
+
+
+.priority-indicator[data-testid="test-todo-priority-indicator"] {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+article[data-priority="High"] .priority-indicator {
+    background-color: var(--priority-color-high-dot);
+}
+
+article[data-priority="Medium"] .priority-indicator {
+    background-color: var(--priority-color-medium-dot);
+}
+
+article[data-priority="Low"] .priority-indicator {
+    background-color: var(--priority-color-low-dot);
 }
 
 article:focus-within {
@@ -69,15 +116,15 @@ article:focus-within {
 .todo-title {
     font-size: 17px;
     font-weight: 500;
-    color: #000c07;
-    line-height: 1.35;
+    color: var(--color-text);
+    line-height: 1.5;
     word-break: break-word;
     transition: all 0.25s;
 }
 
 .todo-title.done {
     text-decoration: line-through;
-    color: #636363;
+    color: var(--color-muted);
 }
 
 .badges {
@@ -89,25 +136,115 @@ article:focus-within {
 }
 
 .priority-badge {
+    display: inline-flex;
     align-items: center;
-    background: #ffb8b8;
-    color: #c70000;
     padding: 0.15rem 0.5rem;
-    border: 1px solid #ff4d4d;
+    gap: 0.25rem;
+    background-color: var(--color-muted);
     border-radius: 10px;
     font-size: 12px;
     font-weight: 500;
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.priority-badge[data-priority="High"] {
+    background: var(--priority-color-high-bg);
+    border: 1px solid var(--priority-color-high-border);
+    color: var(--color-text);
+}
+
+.priority-badge[data-priority="Medium"] {
+    background: var(--priority-color-medium-bg);
+    border: 1px solid var(--priority-color-medium-border);
+    color: var(--color-text);
+}
+
+.priority-badge[data-priority="Low"] {
+    background: var(--priority-color-low-bg);
+    border: 1px solid var(--priority-color-low-border);
+    color: var(--color-text);
 }
 
 .status-badge {
+    display: inline-flex;
     align-items: center;
-    background: #b8d9ff;
-    color: #004c8c;
     padding: 0.15rem 0.5rem;
-    border: 1px solid #4da6ff;
     border-radius: 10px;
     font-size: 12px;
     font-weight: 500;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.status-badge[data-status="In progress"] {
+    background: var(--status-in-progress-bg);
+    color: var(--color-text);
+}
+
+.status-badge[data-status="Done"] {
+    background: var(--status-done-bg);
+    color: var(--color-text);
+}
+
+.status-badge[data-status="Pending"] {
+    background: var(--status-pending-bg);
+    color: var(--color-text);
+}
+
+.status-control {
+    display: flex;
+    margin-bottom: 0.75rem;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.status-button {
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 0.5px solid rgba(0, 0, 0, 0.18);
+    background: transparent;
+    color: #5f5e5a;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, transform 0.1s;
+    font-family: inherit;
+}
+
+.status-button:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #000c07;
+}
+
+.status-button:focus-visible {
+    outline: 2px solid #534AB7;
+}
+
+.status-button:active[data-status="Pending"] {
+    background: var(--status-pending-bg);
+    color: var(--color-text);
+}
+
+.status-button:active[data-status="In progress"] {
+    background: var(--status-in-progress-bg);
+    color: var(--color-text);
+}
+
+.status-button:active[data-status="Done"] {
+    background: var(--status-done-bg);
+    color: var(--color-text);
+}
+
+.description-view {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    word-break: break-word;
+    transition: color 0.25s;
+}
+
+.description-view.done {
+    color: var(--color-muted);
 }
 
 .description {
@@ -119,7 +256,46 @@ article:focus-within {
 }
 
 .description.done {
-    color: #636363;
+    color: var(--color-muted);
+}
+
+.collapsible-section {
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    max-height: 0;
+    opacity: 0;
+}
+
+.collapsible-section.expanded {
+    max-height: 500px;
+    opacity: 1;
+}
+
+.expand-toggle {
+    display: inline-flex;
+    align-items: center;
+    transition: transform 0.3s ease;
+    background: none;
+    border: none;
+    color: #534AB7;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 2px 0;
+    margin-bottom: 0.75rem;
+}
+
+.expand-icon {
+    font-size: 16px;
+}
+
+.expand-toggle:focus-visible {
+    outline: 2px solid #534AB7;
+    outline-offset: 2px;
+}
+
+.expand-toggle.expanded {
+    transform: rotate(180deg);
+    color: var(--color-muted);
 }
 
 .date-row {
@@ -146,6 +322,52 @@ article:focus-within {
     border: 1px solid #534AB7;
     background-color: #4da6ff;
     font-weight: 500;
+    transition: all 0.25s;
+}
+
+.time-remaining.overdue {
+    background-color: var(--overdue-bg);
+    border-color: var(--overdue-border);
+    color: #fff;
+}
+
+.overdue-indicator {
+    display: none;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 10px;
+    background-color: var(--overdue-bg);
+    border: 1px solid var(--overdue-border);
+}
+
+.overdue-indicator.visible {
+    display: flex;
+}
+
+.overdue-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #fff;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.5);
+        opacity: 0.3;
+    }
 }
 
 .divider {
@@ -199,7 +421,7 @@ article:focus-within {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 500;
     padding: 6px 14px;
     border-radius: 8px;
@@ -226,6 +448,128 @@ input:focus-visible {
     outline-offset: 2px;
 }
 
+.edit-form {
+    display: none;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.edit-form.active {
+    display: flex;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.form-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-muted);
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    padding: 0.5rem;
+    border: 1px solid rgba(0, 0, 0, 0.18);
+    background: transparent;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    width: 100%;
+    appearance: none;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    border-color: #534AB7;
+    box-shadow: 0px 0px 0px 3px rgba(0, 0, 0, 0.05);
+    outline: none;
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 80px;
+    line-height: 1.6;
+}
+
+.form-select {
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%204%205%22%3E%3Cpath%20fill%3D%22%23636363%22%20d%3D%22M2%200L0%202h4L2%200zm0%205l2-2H0l2%202z%22/%3E%3C/svg%3E');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 28px;
+    cursor: pointer;
+}
+
+.form-action {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.form-action[data-testid="test-todo-save-button"] {
+    background: #4da6ff;
+    font-size: 14px;
+    color: var(--color-text);
+    font-weight: 500;
+    transition: all 0.25s;
+    border-radius: 8px;
+    padding: 6px 14px;
+    border: none;
+    cursor: pointer;
+}
+
+
+.form-action[data-testid="test-todo-save-button"]:hover {
+    opacity: 0.85;
+}
+
+
+.form-action[data-testid="test-todo-save-button"]:active {
+    transform: scale(0.97);
+}
+
+
+.form-action[data-testid="test-todo-save-button"]:focus-visible {
+    outline: 2px solid #534AB7;
+    outline-offset: 2px;
+}
+
+.form-action[data-testid="test-todo-cancel-button"] {
+    background: transparent;
+    border: 0.5px solid rgba(0, 0, 0, 0.18);
+    font-size: 14px;
+    color: var(--color-text);
+    font-weight: 500;
+    transition: background 0.15s, color 0.15s, transform 0.1s;
+    border-radius: 8px;
+    padding: 6px 14px;
+    cursor: pointer;
+}
+
+.form-action[data-testid="test-todo-cancel-button"]:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--color-muted);
+}
+
+.form-action[data-testid="test-todo-cancel-button"]:active {
+    transform: scale(0.97);
+}
+
+.form-action[data-testid="test-todo-cancel-button"]:focus-visible {
+    outline: 2px solid #534AB7;
+    outline-offset: 2px;
+}
+
+.view-content.hidden {
+    display: none;
+}
+
 .delete-button:hover {
     background: #ffb8b8;
     color: #c70000;
@@ -249,5 +593,13 @@ input:focus-visible {
     .description,
     .date-row {
         font-size: 13px;
+    }
+
+    .status-control {
+        gap: 0.25rem;
+    }
+
+    .action-buttons {
+        flex-wrap: wrap;
     }
 }
